@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ByteBox — Asesoría y Mantenimiento Informático</title>
+  <meta name="description" content="ByteBox — Asesoría y mantenimiento de PCs y consolas. Servicios profesionales y soporte técnico." />
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    :root{
+      --purple: #6A0DAA;
+      --cyan:   #00CFE8;
+      --black:  #0b0b0b;
+      --muted:  #f3f6fb;
+      --accent-shadow: 0 10px 30px rgba(106,13,170,0.12);
+      --glass: rgba(255,255,255,0.9);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0; background: linear-gradient(180deg,var(--muted),#ffffff); color:var(--black); -webkit-font-smoothing:antialiased;}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;height:auto;display:block}
+
+    .container{max-width:1100px;margin:0 auto;padding:28px;}
+
+    /* Header */
+    header{background:linear-gradient(90deg,var(--purple),var(--cyan));color:white;padding:18px 0;border-radius:0 0 18px 18px;position:relative;overflow:hidden;}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .brand img{width:84px;height:84px;object-fit:contain;border-radius:18px;background:white;padding:6px}
+    .brand h1{font-size:18px;margin:0}
+    nav{display:flex;gap:18px;align-items:center}
+    nav a{font-weight:600;color:rgba(255,255,255,0.95)}
+    .nav-toggle{display:none;background:transparent;border:0;color:white;font-size:22px}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;padding:40px 0;position:relative;overflow:hidden;}
+    .hero::before{content:"";position:absolute;width:420px;height:420px;background:radial-gradient(circle,rgba(0,207,232,0.18),transparent 70%);top:-100px;right:-100px;animation:floatGlow 6s ease-in-out infinite alternate;z-index:0;}
+    @keyframes floatGlow{from{transform:translateY(0);opacity:0.8;}to{transform:translateY(20px);opacity:0.6;}}
+    .hero h3{font-size:30px;margin:0 0 12px;color:white}
+    .hero p{margin:0 0 18px;color:rgba(255,255,255,0.95)}
+    .cta{display:inline-block;background:white;color:var(--black);padding:12px 18px;border-radius:12px;font-weight:700;box-shadow:var(--accent-shadow)}
+
+    /* Cards */
+    .card{background:white;border-radius:14px;padding:18px;box-shadow:0 8px 20px rgba(0,0,0,0.06);transition:transform .3s ease,box-shadow .3s ease;}
+    .card:hover{transform:translateY(-8px);box-shadow:0 20px 40px rgba(0,0,0,0.12);}
+
+    /* Layout */
+    section{padding:36px 0}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .service{padding:18px;border-radius:10px;background:linear-gradient(180deg,#fff,#f7f9ff);border:1px solid rgba(10,10,10,0.03)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+    footer{padding:24px 0;border-top:1px solid rgba(10,10,10,0.04);text-align:center;color:#444}
+
+    form{display:flex;flex-direction:column;gap:12px}
+    input,textarea,button,select{font:inherit;padding:10px;border-radius:8px;border:1px solid #d7dbe8}
+    textarea{min-height:120px;resize:vertical}
+    .btn-primary{background:linear-gradient(90deg,var(--purple),var(--cyan));color:white;border:0;padding:12px 14px;border-radius:10px;font-weight:700;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,0.12);transition:transform .18s ease,box-shadow .18s ease;}
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(0,0,0,0.18)}
+
+    /* Prices table (interactive) */
+    table{width:100%;border-collapse:collapse;margin-top:18px}
+    thead th{background:#f2f2f2;padding:12px;text-align:left;border:1px solid #ddd}
+    tbody td{padding:12px;border:1px solid #eee}
+    tbody tr{transition:background .18s,transform .18s}
+    tbody tr:hover{background:linear-gradient(90deg, rgba(0,207,232,0.06), rgba(106,13,170,0.03));cursor:pointer;transform:translateY(-3px)}
+
+    /* Hover letter animation (used on h2/h3) */
+    .hover-animate {
+      display:inline-block;
+      background: linear-gradient(90deg, #FF6A00, #FF4081);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      transition: transform .3s ease, background-position .5s ease;
+      background-size:200% 100%;
+      cursor:default;
+    }
+    .hover-animate:hover{transform:translateY(-5px) scale(1.08);background-position:100% 0}
+
+    /* Confirmation modal (floating) */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(11,11,11,0.5);display:flex;align-items:center;justify-content:center;z-index:2000;opacity:0;pointer-events:none;transition:opacity .18s ease;
+    }
+    .modal-backdrop[aria-hidden="false"]{opacity:1;pointer-events:auto}
+    .modal {
+      background:white;border-radius:14px;padding:24px 22px;max-width:420px;width:92%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.35);
+      transform:translateY(8px);transition:transform .18s ease;
+    }
+    .modal h3{color:var(--purple);margin:0 0 8px}
+    .modal p{color:#444;margin:0 0 14px}
+    .modal .ok{
+      display:inline-block;padding:10px 18px;border-radius:10px;background:linear-gradient(90deg,var(--purple),var(--cyan));color:white;font-weight:700;text-decoration:none;
+      box-shadow:0 8px 30px rgba(0,0,0,0.12);
+    }
+    /* Brillo animación del texto en modal */
+    .shimmer {
+      background: linear-gradient(90deg,#00ffd5,#6A0DAA,#00CFE8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% 100%;
+      animation: shimmer 2.5s linear infinite;
+      font-weight:800;
+    }
+    @keyframes shimmer { from{background-position:0% 50%} to{background-position:200% 50%} }
+
+    /* small screens */
+    @media(max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .grid{grid-template-columns:repeat(2,1fr)}
+      .two-col{grid-template-columns:1fr}
+      nav{display:none}
+      .nav-toggle{display:block}
+    }
+    @media(max-width:560px){
+      .grid{grid-template-columns:1fr}
+      .brand img{width:48px;height:48px}
+      .hero h3{font-size:22px}
+    }
+
+    .muted{color:#65738a}
+    input[readonly]{background:#f5f7fb;cursor:not-allowed}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand" aria-hidden="false">
+        <img src="logo.jpg" alt="Logotipo ByteBox" onerror="this.style.display='none'">
+        <div>
+          <h1>ByteBox</h1>
+          <div class="muted">Asesoría y mantenimiento informático</div>
+        </div>
+      </div>
+
+      <nav id="mainNav" aria-label="Navegación principal">
+        <a href="#servicios">Servicios</a>
+        <a href="#precios">Precios</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+
+      <button class="nav-toggle" aria-label="Abrir menú" onclick="toggleNav()">☰</button>
+    </div>
+
+    <div class="container">
+      <div class="hero">
+        <div>
+          <h2 class="hover-letters">Soporte técnico profesional para tu equipo — rápido y confiable</h3>
+          <p>En ByteBox nos especializamos en mantenimiento preventivo, optimización y asesoría personalizada para PCs y consolas. Soluciones claras, precios justos y servicio a domicilio o en taller.</p>
+          <a class="cta" href="#contacto">Solicitar presupuesto</a>
+
+          <div style="height:18px"></div>
+          <div class="card" style="display:flex;justify-content:space-around;align-items:center;text-align:center;flex-wrap:wrap;">
+            <div><strong style="font-size:20px;color:var(--purple)">+300</strong><br><span style="color:black;">Clientes felices</span></div>
+            <div><strong style="font-size:20px;color:var(--cyan)">5⭐</strong><br><span style="color:black;">Valoración promedio</span></div>
+            <div><strong style="font-size:20px;color:var(--purple)">24h</strong><br><span style="color:black;">Atención rápida</span></div>
+          </div>
+        </div>
+
+        <div class="card" style="overflow:hidden;position:relative;">
+          <img src="imagen.jpg" alt="Técnico de ByteBox" loading="lazy" style="border-radius:12px;width:100%;height:auto;box-shadow:0 0 20px rgba(106,13,170,0.2);">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Servicios -->
+  <section id="servicios" class="container">
+    <h2 class="hover-letters">Qué ofrecemos</h2>
+    <p class="muted">Servicios pensados para empresas y usuarios particulares.</p>
+    <div class="grid" style="margin-top:18px">
+      <div class="service card"><h3 class="hover-letters">Mantenimiento Preventivo</h3><p>Limpieza física, revisión de ventilación y testeos de estabilidad.</p></div>
+      <div class="service card"><h3 class="hover-letters">Optimización de Software</h3><p>Velocidad de arranque, limpieza de programas innecesarios y ajustes de configuración.</p></div>
+      <div class="service card"><h3 class="hover-letters">Diagnóstico y Repuestos</h3><p>Pruebas completas, identificación de fallas y reemplazo con garantía.</p></div>
+    </div>
+  </section>
+
+  <!-- Precios -->
+  <section id="precios" class="container">
+    <h2 class="hover-letters">Precios de Servicios</h2>
+    <p class="muted">Haz clic en un servicio para que se copie en el formulario de contacto.</p>
+
+    <table class="card" id="tablaPrecios" aria-label="Tabla de precios">
+      <thead>
+        <tr><th>Servicio</th><th>Descripción</th><th>Precio sugerido (USD)</th></tr>
+      </thead>
+      <tbody>
+        <tr data-servicio="Asesoría para compra de PC o consola — US$ 20 – 40">
+          <td>Asesoría para compra de PC o consola</td>
+          <td>Análisis de necesidades + guía de compra personalizada</td>
+          <td>US$ 20 – US$ 40</td>
+        </tr>
+        <tr data-servicio="Diagnóstico básico de equipo — US$ 25">
+          <td>Diagnóstico básico de equipo</td>
+          <td>Revisión de lentitud, errores comunes, fallas de hardware</td>
+          <td>US$ 25</td>
+        </tr>
+        <tr data-servicio="Mantenimiento preventivo (software) — US$ 25">
+          <td>Mantenimiento preventivo (software)</td>
+          <td>Limpieza de archivos, optimización</td>
+          <td>US$ 25</td>
+        </tr>
+        <tr data-servicio="Mantenimiento preventivo (físico, presencial) — US$ 30">
+          <td>Mantenimiento preventivo (físico, presencial)</td>
+          <td>Limpieza interna básica (PC o consola)</td>
+          <td>US$ 30</td>
+        </tr>
+        <tr data-servicio="Asesoría configuración de consolas — US$ 20">
+          <td>Asesoría configuración de consolas</td>
+          <td>Conexión, cuenta, ajuste almacenamiento, control parental</td>
+          <td>US$ 20</td>
+        </tr>
+        <tr data-servicio="Sesión de asesoría personalizada (1 hora) — US$ 15 – 25">
+          <td>Sesión de asesoría personalizada (1 hora)</td>
+          <td>Resolución de dudas técnicas, explicación clara</td>
+          <td>US$ 15 – US$ 25</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Nosotros y Contacto -->
+  <section id="nosotros" class="container">
+    <div class="two-col">
+      <div>
+        <h2 class="hover-letters">Sobre ByteBox</h2>
+        <p class="muted">Somos un taller técnico con enfoque en soluciones claras y atención cercana. Nuestra misión es que tus dispositivos funcionen correctamente para que no interrumpan tu trabajo o estudio.</p>
+        <ul><li>Atención personalizada</li><li>Diagnóstico rápido</li><li>Precios transparentes</li></ul>
+      </div>
+
+      <div id="contacto">
+        <h2 class="hover-letters">Contacto</h2>
+        <p class="muted">Escríbenos y responderemos lo antes posible.</p>
+
+        <form id="formularioContacto" action="https://formsubmit.co/byteboxservicios@gmail.com" method="POST" aria-label="Formulario de contacto">
+          <input type="text" name="nombre" placeholder="Tu nombre" required aria-label="Tu nombre">
+          <input type="email" name="email" placeholder="Tu correo" required aria-label="Tu correo">
+          <!-- campo readonly para servicio seleccionado -->
+          <input type="text" id="servicioSeleccionado" name="servicio" placeholder="Servicio seleccionado" readonly aria-label="Servicio seleccionado">
+          <textarea name="mensaje" placeholder="Escribe tu mensaje" required aria-label="Mensaje"></textarea>
+
+          <!-- Evitar captcha / mantener en misma página -->
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_next" value="">
+
+          <button class="btn-primary" type="submit">Enviar mensaje</button>
+        </form>
+
+        <div style="margin-top:12px;font-size:14px;color:#555">
+          Llámanos o escríbenos al <strong>+593 99 317 8132</strong> — <strong>byteboxservicios@gmail.com</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div><strong>ByteBox</strong> — Asesoría y mantenimiento</div>
+      <div class="muted">© <span id="year">2025</span> ByteBox. Todos los derechos reservados.</div>
+    </div>
+  </footer>
+
+  <!-- Modal de confirmación -->
+  <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal" role="document">
+      <h3 class="shimmer">¡Gracias! ✅</h3>
+      <p>Tu mensaje fue enviado correctamente. En breve nos contactamos contigo.</p>
+      <a href="#" class="ok" id="modalOk">Aceptar</a>
+    </div>
+  </div>
+
+  <script>
+    /***** Helpers: UI behaviors *****/
+    function toggleNav(){
+      const nav = document.getElementById('mainNav');
+      nav.style.display = (nav.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    // Update year
+    document.getElementById('year').innerText = new Date().getFullYear();
+
+    /***** Letras animadas en h2/h3 (divide en spans) *****/
+    (function applyLetterAnimation(){
+      document.querySelectorAll('.hover-letters').forEach(el => {
+        const text = el.textContent.trim();
+        el.innerHTML = text.split('').map((c,i) => {
+          if (c === ' ') return ' ';
+          const delay = (i * 0.02).toFixed(2);
+          return `<span class="hover-animate" style="display:inline-block;transition-delay:${delay}s">${c}</span>`;
+        }).join('');
+      });
+    })();
+
+    /***** Selección de servicio desde la tabla (campo readonly) *****/
+    const filas = document.querySelectorAll('#tablaPrecios tbody tr');
+    const campoServicio = document.getElementById('servicioSeleccionado');
+
+    filas.forEach(fila => {
+      fila.addEventListener('click', () => {
+        const servicio = fila.getAttribute('data-servicio') || fila.textContent.trim();
+        campoServicio.value = servicio;
+        // small focus + glow
+        campoServicio.focus();
+        campoServicio.style.boxShadow = "0 0 18px rgba(0,207,232,0.9)";
+        setTimeout(()=> campoServicio.style.boxShadow = "none", 900);
+      });
+      // keyboard accessibility: select with Enter
+      fila.tabIndex = 0;
+      fila.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          fila.click();
+        }
+      });
+    });
+
+    /***** Form submit using FormSubmit + modal confirmation *****/
+    const form = document.getElementById('formularioContacto');
+    const backdrop = document.getElementById('modalBackdrop');
+    const modalOk = document.getElementById('modalOk');
+
+    function openModal() {
+      backdrop.setAttribute('aria-hidden','false');
+    }
+    function closeModal() {
+      backdrop.setAttribute('aria-hidden','true');
+    }
+    modalOk.addEventListener('click', (e) => { e.preventDefault(); closeModal(); });
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      // basic validation already ensured by required attributes
+      fetch(form.action, {
+        method: form.method,
+        body: new FormData(form),
+      }).then(response => {
+        // formsubmit often returns 200/302; assume success
+        form.reset();
+        closeModal(); // ensure hidden then open (reset animation)
+        setTimeout(openModal, 80);
+        // set focus to modal for accessibility
+        setTimeout(() => modalOk.focus(), 200);
+      }).catch(err => {
+        console.error(err);
+        alert('❌ Ocurrió un error al enviar tu mensaje. Intenta nuevamente más tarde.');
+      });
+    });
+
+    // Close modal with ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && backdrop.getAttribute('aria-hidden') === 'false') closeModal();
+    });
+
+    // Allow clicking on backdrop to close
+    backdrop.addEventListener('click', (ev) => {
+      if (ev.target === backdrop) closeModal();
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
